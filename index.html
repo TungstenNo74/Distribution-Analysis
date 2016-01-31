@@ -13,15 +13,20 @@ text.legend{
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript">
 
+
+//Configuration Variables
 var width = 900,
-  height = 500
-margin = {
-    "left": 20,
-    "right": 20,
-    "top": 20,
-    "bottom": 20
-  },
-  radius = 250;
+    height = 500,
+    margin = {
+        "left": 20,
+        "right": 20,
+        "top": 20,
+        "bottom": 20
+      },
+    radius = 250;
+
+
+var numberOfExams = 30;
 
 var evaluators = [{
   'name': 'A',
@@ -55,7 +60,7 @@ var evaluators = [{
   'exams': [2, 6, 10, 14, 16, 18, 20, 22, 24, 28, ]
 }];
 
-var exams = d3.range(30);
+var exams = d3.range(numberOfExams);
 
 var examScale = d3.scale.linear()
   .domain([0, 30])
@@ -130,7 +135,9 @@ var examCounts = svg.append("g").selectAll("text").data(exams)
     return Math.cos(examScale(d)) * (radius*-.9) + radius;
   });
 
-var legend = svg.append("g").attr("transform", "translate(" + (2.5 * radius) + "," + 50 + ")");
+var legend = svg.append("g")
+  .attr("transform", "translate(" + (2.5 * radius) + "," + 50 + ")");
+
 var legendBox = legend.selectAll("rect").data(evaluators)
   .enter().append("rect")
   .attr("width", 100)
