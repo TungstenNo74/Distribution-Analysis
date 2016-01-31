@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style media="screen">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Exam Distribution Analysis</title>
+  <style media="screen">
 
-text.legend{
-  fill: white;
-  font-size: 15pt;
-  font-family: Helvetica;
-  font-weight: bolder;
-}
+  text.legend{
+    fill: white;
+    font-size: 15pt;
+    font-family: Helvetica;
+    font-weight: bolder;
+  }
 
-</style>
-<script src="//d3js.org/d3.v3.min.js"></script>
+  </style>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript">
+console.log("I run");
 
 
 //Configuration Variables
@@ -59,13 +65,17 @@ var evaluators = [{
   'name': 'J',
   'exams': [2, 6, 10, 14, 16, 18, 20, 22, 24, 28, ]
 }];
+console.log(evaluators);
 
 var exams = d3.range(numberOfExams);
+console.log(exams);
 
 var examScale = d3.scale.linear()
   .domain([0, 30])
   .range([0, 2 * Math.PI]);
+console.log(examScale.domain());
 
+//Color Scale for evaluator colors
 var evaluatorScale = d3.scale.category10();
 
 var svg = d3.select("body").append("svg")
@@ -76,38 +86,43 @@ var svg = d3.select("body").append("svg")
 
 var examLabels = svg.selectAll("text").data(exams)
   .enter().append("text")
-  .text(function(d) {
-    return d;
-  })
-  .attr("x", function(d) {
-    return Math.sin(examScale(d)) * (radius) + radius;
-  })
-  .attr("y", function(d) {
-    return -Math.cos(examScale(d)) * (radius) + radius;
-  });
+  .text(function(d) { return d; })
+  .attr("x",
+    function(d) { return Math.sin(examScale(d)) * (radius) + radius;
+    })
+  .attr("y",
+    function(d) { return -Math.cos(examScale(d)) * (radius) + radius;
+    });
 
 var lines = svg.selectAll("path").data(evaluators)
   .enter().append("path")
   .attr("d", function(d) {
-    var path = d.exams.sort(function(a, b) {
-      return a - b;
-    }).map(
+      var path = d.exams.sort(function(a, b) {
+        return a - b;
+      }).map(
 
-      function(a) {
-        return "C " +
-          (Math.sin(examScale(a)) * (radius*0.5) + radius) + " " +
-          (Math.cos(examScale(a)) * (-1*radius*0.5) + radius) + " " +
-          (Math.sin(examScale(a)) * (radius*0.5) + radius) + " " +
-          (Math.cos(examScale(a)) * (-1*radius*0.5) + radius) + " " +
-          (Math.sin(examScale(a)) * (radius) + radius) + " " +
-          (Math.cos(examScale(a)) * (-1*radius) + radius) + " ";
-      }
+            function(a) {
+              return "C " +
+                //Control 1
+                (Math.sin(examScale(a)) * (radius*0.5) + radius) + " " +
+                (Math.cos(examScale(a)) * (-1*radius*0.5) + radius) + " " +
+                //Control 2
+                (Math.sin(examScale(a)) * (radius*0.5) + radius) + " " +
+                (Math.cos(examScale(a)) * (-1*radius*0.5) + radius) + " " +
+                //New Point
+                (Math.sin(examScale(a)) * (radius) + radius) + " " +
+                (Math.cos(examScale(a)) * (-1*radius) + radius) + " ";
+            }
 
-    ).join("");
-    var reset = nth_ocurrence(path, ' ', 5);
-    path = 'M' + path.slice(reset);
-    return path;
-  })
+          ).join("");
+
+          //The beginning of the curve is configured like a string.  This starts it
+          //with an M
+          var reset = nth_ocurrence(path, ' ', 5);
+          path = 'M' + path.slice(reset);
+
+          return path;
+        })
   .style("stroke-width", "2px")
   .style("fill", "none")
   .style("stroke", function(d) {
@@ -187,3 +202,4 @@ function nth_ocurrence(str, needle, nth) {
 }
 
 </script>
+</body>
